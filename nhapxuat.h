@@ -1,3 +1,52 @@
+void Sort(int A[], int q, int r) {
+    int temp;
+    int i = q;
+    int j = r;
+    int x = A[(q + r)/2]; 
+    do { 
+        while (A[i] < x) i++;
+        while (A[j] > x) j--; 
+        if (i <= j) 
+        {
+            temp = A[i];
+            A[i] = A[j];
+            A[j] = temp;
+            i++; j--;
+        }
+    } while (i <= j);
+    if (q < j) Sort(A, q, j);
+    if (i < r) Sort(A, i, r);
+}
+
+void CreateFileMaTheDocGia(){
+	int a[MAX_DOC_GIA];
+	a[0]=0;
+	a[1]= MAX_DOC_GIA;
+	int j=2;
+	int k=2;
+	int TheDocGiaBST[MAX_DOC_GIA];
+	int count = 0;
+	while(a[1]!=1)
+	{
+		for(int i=0;i<j-1;i++){
+			a[k]=(a[i]+a[i+1])/2;
+			TheDocGiaBST[count] = a[k];
+			count++;
+			k++;
+		}
+		j=k;
+		Sort(a, 0, k-1);
+	}
+	
+	fstream fileMaTheDocGia;
+	fileMaTheDocGia.open("data_MaTheDocGia.txt", ios::out | ios::trunc);
+	fileMaTheDocGia << count << endl;	
+	for(int i=0; i<count; i++)
+		fileMaTheDocGia << TheDocGiaBST[i]<<"\t";
+	fileMaTheDocGia.close();
+}
+
+
 void ReadDauSachFromFile(DS_DauSach &DSDS) {
 	fstream fileDauSach, fileDMS;
 	fileDauSach.open("data_dsds.txt", ios::in);

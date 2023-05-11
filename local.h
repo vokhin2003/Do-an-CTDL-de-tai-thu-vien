@@ -343,15 +343,13 @@ void Scan(DS_DauSach &DSDS, EditText* &txt, int maxN, ScanType type, int startLi
 					}
 					break;
 					
-				case TEXT_NUM_ADD_COMMA_UPPERCASE:
-					if (TextOnly(c, true) || NumberOnly(n, c)) {
-						if (KiemTraNhapLieu(txt, n, c) == 0) {
-							txt->content[n++] = '\0';
-						} else {
-							txt->content[n++] = toupper(c);
-						}
-					}
-					break;
+				case TEXT_NUM_ADD_COMMA_UPPERCASE://chi chu thuong hoac theo nguoi dung nhap vao + dau phay
+                if(TextOnly(c,true) || NumberOnly(n, c))
+                	if((KiemTraNhapLieu(txt,n,c) == 0))
+                		txt->content[n++] = '\0';
+					else
+						txt->content[n++] = toupper(c);
+                break;
 					
 				case TEXT_NUMBER:
 					if (TextOnly(c, false) || NumberOnly(n, c)) {
@@ -490,7 +488,7 @@ void MoveToPrevDSDG(EditText &HoDocGia,EditText &TenDocGia,EditText &PhaiDocGia,
 
 void KeyBoardEvent(DS_DauSach &DSDS) {
 	if (GetAsyncKeyState(VK_LEFT) || GetAsyncKeyState(VK_RIGHT)) {
-		ClearScreen(4); //
+		ClearScreen(4); // khong nhan 2 phim mui ten > va <
 		return;
 	}
 	
@@ -542,7 +540,7 @@ void KeyBoardEvent(DS_DauSach &DSDS) {
 			if (Window == DANH_SACH_DAU_SACH && Edit == &edTimDauSach) {
 				Scan(DSDS, Edit, 20, TIM_DAU_SACH);
 			} else if (Window == THEM_DAU_SACH) {
-				if (Edit = &edThemISBN) {
+				if (Edit == &edThemISBN) {
 					Scan(DSDS, Edit, 10, DELETE_SPACE_UPPERCASE);
 				} else if (Edit == &edThemTenSach) {
 					Scan(DSDS, Edit, 30, SPACE_TEXT_NUM_UPPERCASE);

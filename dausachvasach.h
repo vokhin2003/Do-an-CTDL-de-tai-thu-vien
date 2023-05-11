@@ -626,43 +626,48 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 		}
 	}
 	// WINDOW THEM DAU SACH
-	else if (Window == THEM_DAU_SACH) {
-		ButtonEffect(btnBack);
-		ButtonEffect(btnThemDauSach);
+	else if(Window == THEM_DAU_SACH){
+		ButtonEffect(btnBack);	
+		ButtonEffect(btnThemDauSach);	
 		ButtonEffect(btnClearThemDauSach);
-		if (GetAsyncKeyState(VK_LBUTTON)) {
-			if (btnBack.isMouseHover(mx, my)) {
+		if(GetAsyncKeyState(VK_LBUTTON)){
+			if(btnBack.isMouseHover(mx, my)){
 				Window = DANH_SACH_DAU_SACH;
-				ClearScreen(2);
-				DrawTrangConDSDS(DSDS);
-			} else if (btnClearThemDauSach.isMouseHover(mx, my)) {
+				ClearScreen(2);	
+				DrawTrangConDSDS(DSDS);	
+			}
+			else if(btnClearThemDauSach.isMouseHover(mx, my)){
 				ClearScreen(2);
 				DrawThemDauSach();
-			} else if (edThemISBN.isMouseHover(mx, my)) {
+			}			
+			else if(edThemISBN.isMouseHover(mx, my))
 				Edit = &edThemISBN;
-			} else if (edThemTenSach.isMouseHover(mx, my)) {
+			else if(edThemTenSach.isMouseHover(mx, my))
 				Edit = &edThemTenSach;
-			} else if (edThemSoTrang.isMouseHover(mx, my)) {
+			else if(edThemSoTrang.isMouseHover(mx, my))
 				Edit = &edThemSoTrang;
-			} else if (edThemTacGia.isMouseHover(mx, my)) {
+			else if(edThemTacGia.isMouseHover(mx, my))
 				Edit = &edThemTacGia;
-			} else if (edThemNXB.isMouseHover(mx, my)) {
+			else if(edThemNXB.isMouseHover(mx, my))
 				Edit = &edThemNXB;
-			} else if (edThemTheLoai.isMouseHover(mx, my)) {
-				Edit = &edThemTheLoai;
-			} else if (btnThemDauSach.isMouseHover(mx, my)) {
-				// Check sach truoc khi add
-				
-				if (CheckDauSach(DSDS, edThemISBN, edThemTenSach, edThemSoTrang, edThemTacGia, edThemNXB, edThemTheLoai, true, true)) {
-					DauSach *dauSach = new DauSach(edThemISBN.trim(), edThemTenSach.trim(), edThemSoTrang.toInt(), edThemTacGia.trim(), edThemNXB.toInt(), edThemTheLoai.trim());
-					if (InsertOrderDauSach(DSDS, dauSach)) {
+			else if(edThemTheLoai.isMouseHover(mx, my))
+				Edit = &edThemTheLoai;	
+			else if(btnThemDauSach.isMouseHover(mx, my)){
+				// check truoc khi add
+				if(CheckDauSach(DSDS,edThemISBN,edThemTenSach,edThemSoTrang,edThemTacGia,edThemNXB,edThemTheLoai, true, true)){
+					DauSach* dausach = new DauSach(edThemISBN.trim(), 
+								edThemTenSach.trim(), 
+								edThemSoTrang.toInt(), 
+								edThemTacGia.trim(), 
+								edThemNXB.toInt(), 
+								edThemTheLoai.trim());
+					if(InsertOrderDauSach(DSDS, dausach))	{
 						strcpy(mess, "Them dau sach thanh cong!");
 						recentEditISBN = edThemISBN.trim();
-					} else {
+					}						
+					else  
 						strcpy(mess, "Them dau sach that bai do day bo nho!");
-					}
 				}
-				
 				DrawThemDauSach();
 			}
 		}
@@ -828,8 +833,10 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					DrawTrangConDSDS(DSDS);
 				} else if (btnThemSach.isMouseHover(mx, my)) {
 					// CHECK THEM SACH
+					cout << edThemViTriSach.content;
 					if (CheckSach(edThemTrangThaiSach,edThemViTriSach,true)) {
 						Sach sach(edThemMaSach.content, edThemTrangThaiSach.toInt(), edThemViTriSach.content);
+						cout << edThemViTriSach.content;
 						InsertLastNodeSach(DSDS.nodes[currentDauSach]->First, sach);
 						DSDS.nodes[currentDauSach]->soLuong++;
 						currentNhapSach++;

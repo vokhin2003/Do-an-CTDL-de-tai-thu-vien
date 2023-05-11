@@ -10,7 +10,7 @@ struct Sach{
 	Sach(char ms[20], int tt, char vt[30]) {
 		strcpy(MASACH, ms);
 		trangThai = tt;
-		strcpy(vt, viTri);
+		strcpy(viTri, vt);
 	}
 
 };
@@ -359,6 +359,18 @@ void DeleteAllMuonTra(DS_MuonTra &DSMT) {
 	DSMT.chuaTra = 0;
 }
 
+// Tra sach + lam mat sach
+void Update_MuonTra(DS_MuonTra &DSMT, MuonTra &mt){
+	for(mtPTR node = DSMT.First; node != NULL; node = node->next){
+		if(strcmp(node->muonTra.MASACH, mt.MASACH) == 0 && strlen(node->muonTra.ngayTra) == 0){
+			node->muonTra = mt;
+			if(mt.trangThai == 1) 
+				DSMT.chuaTra--;
+			return;
+		}
+	}	
+}
+
 // -----------------------------------
 // DOC GIA
 // -----------------------------------
@@ -613,15 +625,26 @@ DocGiaPTR TimDocGiaTheoMa(DocGiaPTR &root, int maDocGia) {
 
 // Xoa 1 doc gia theo maDocGia
 int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
-	
+
 }
 
 void UpdateDocGia(DocGiaPTR &root, DocGia &docGia) {
-	
+	DocGiaPTR nodeUpdate = TimDocGiaTheoMa(root, docGia.MATHE);
+	if(nodeUpdate == NULL){
+		printf("K the update doc gia \n");
+	}else{
+		docGia.mt = nodeUpdate->docGia.mt;
+		nodeUpdate->docGia = docGia;
+	}	
 }
 
 void DeleteMemoryDocGia(DocGiaPTR &node) {
-	
+	if(node != NULL){
+		DeleteMemoryDocGia(node->left);
+		DeleteMemoryDocGia(node->right);		
+		DeleteAllMuonTra(node->docGia.mt);		
+		delete node;
+	}
 }
 
 // ===================================================== //
@@ -663,3 +686,49 @@ bool DeleteFirst_TDGTS(TDGTS_PTR &Last) {
         return true;
     }
 }
+
+// ------------------------------------------------------
+// Top sach
+
+struct LuotMuonSach{
+	int indexDS;	// vi tri cua DauSach
+	int count;		// so luot muon
+};	
+
+struct TopSach{
+	int n;
+	LuotMuonSach *list;	
+	TopSach(DS_DauSach &DSDS){
+		n = DSDS.n;
+		list = new LuotMuonSach[n];
+		for(int i=0; i<n; i++){
+			list[i].indexDS = i;
+			list[i].count = DSDS.nodes[i]->soluotmuon;
+		}
+		// Sap xep theo thu tu count giam dan
+		// Su dung QuickSort
+		partition(0, n-1);
+	}
+	~TopSach(){
+		delete[] list;
+	}	
+	// Phan doan
+	void partition(int low, int high){
+		int i = low, j = high;
+		LuotMuonSach tmp;
+		int pivot = list[(low+high)/2].count;
+		do{
+			while(list[i].count > pivot) i++;
+			while(list[j].count < pivot) j--;
+			if(i <= j){
+				tmp = list[i];
+				list[i] = list[j];
+				list[j] = tmp;
+				i++; j--;
+			}
+		}while(i <= j);
+		
+		if(low < j) partition(low, j);
+		if(i < high) partition(i, high);
+	}
+};
