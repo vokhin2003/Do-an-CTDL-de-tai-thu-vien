@@ -238,7 +238,7 @@ void DrawThemDocGia(TDGTS_PTR tdg, bool genNewID = true);
 void DrawMuonSach();
 void ItemDocGiaEvent(TreeDocGia &DSDG, DS_DauSach &DSDS);
 void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg);
-//void MuonTraEvent(DS_DauSach &DSDS, TreeDocGia &DSDG);
+void MuonTraEvent(DS_DauSach &DSDS, TreeDocGia &DSDG);
 void WriteDauSachToFile(DS_DauSach &DSDS);
 void WriteDocGiaToFile(DocGiaPTR &root);
 void WriteMaTheDocGia(TDGTS_PTR tdg);
@@ -607,11 +607,11 @@ void KeyBoardEvent(DS_DauSach &DSDS) {
 				}
 			}
 		} else if (currentMenu == btnQLSach.id) {
-//			if (Edit == &edNhapMaDGMuonSach) {
-//				Scan(DSDS, Edit, 5, ONLY_NUMBER);
-//			} else if (Edit == &edNhapMaSachMuonSach) {
-//				Scan(DSDS, Edit, 15, TIM_MA_SACH);
-//			}
+			if (Edit == &edNhapMaDGMuonSach) {
+				Scan(DSDS, Edit, 5, ONLY_NUMBER);
+			} else if (Edit == &edNhapMaSachMuonSach) {
+				Scan(DSDS, Edit, 15, TIM_MA_SACH);
+			}
 		} else {
 			ClearScreen(4);
 		}
@@ -667,7 +667,7 @@ void Event(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 	} else if (currentMenu == btnQLDocGia.id) {
 		DocGiaEvent(DSDS, DSDG, tdg);
 	} else if (currentMenu == btnQLSach.id) {
-		//MuonTraEvent(DSDS, DSDG);
+		MuonTraEvent(DSDS, DSDG);
 	}
 }
 
@@ -687,7 +687,7 @@ void SetMenuSelect(DS_DauSach &DSDS, TreeDocGia &DSDG, int menuID) {
 			DrawDanhSachDocGia(DSDG, DSDS);
 		} else if (menuID == btnQLSach.id) {
 			Window = MUON_SACH;
-			//DrawMuonSach();
+			DrawMuonSach();
 		}
 	}
 }

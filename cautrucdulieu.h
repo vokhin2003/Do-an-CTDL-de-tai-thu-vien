@@ -1,6 +1,6 @@
 struct Sach{
 	char MASACH[15];
-	int trangThai;
+	int trangThai; // 0: cho muon duoc, 1: da co nguoi muon, 2: sach da thanh ly
 	char viTri[20];
 	
 	Sach(){
@@ -698,12 +698,13 @@ struct LuotMuonSach{
 struct TopSach{
 	int n;
 	LuotMuonSach *list;	
-	TopSach(DS_DauSach &DSDS){
+	
+	TopSach(DS_DauSach &DSDS) {
 		n = DSDS.n;
 		list = new LuotMuonSach[n];
 		for(int i=0; i<n; i++){
 			list[i].indexDS = i;
-			list[i].count = DSDS.nodes[i]->soluotmuon;
+			list[i].count = DSDS.nodes[i]->soLuotMuon;
 		}
 		// Sap xep theo thu tu count giam dan
 		// Su dung QuickSort
@@ -717,7 +718,7 @@ struct TopSach{
 		int i = low, j = high;
 		LuotMuonSach tmp;
 		int pivot = list[(low+high)/2].count;
-		do{
+		do {
 			while(list[i].count > pivot) i++;
 			while(list[j].count < pivot) j--;
 			if(i <= j){
@@ -726,7 +727,7 @@ struct TopSach{
 				list[j] = tmp;
 				i++; j--;
 			}
-		}while(i <= j);
+		} while(i <= j);
 		
 		if(low < j) partition(low, j);
 		if(i < high) partition(i, high);
