@@ -88,7 +88,7 @@ void DrawTraSach() {
 }
 
 void DrawMuonSach(){
-	CurrentMenuMuonTra = -1;
+	currentMenuMuonTra = -1;
 	btnMuonSach.isHover = true;
 	btnMuonSach.isChoose = true;
 	btnBackToMenu.draw();
@@ -131,21 +131,21 @@ int GetPositionOfMuonTraItem(int y){
 	return pos;
 }
 
-void DrawBorderDSMT(){
+void DrawBorderDSMT() {
 	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 	setcolor(BORDER_COLOR);
 	setbkcolor(BG_COLOR);
 	char t[4][15] = {"Ma sach", "Ten sach", "Ngay muon", "Trang thai"};
 	setfillstyle(SOLID_FILL, BORDER_COLOR);
-	rectangle(150, 275, 800, 500); // khung thong tin doc gia
-	rectangle(XMT[0], 550, XMT[4], 775);//khung DSMT
-	if (Window == MUON_SACH) { //chi ve khung thong bao cho window MUON_SACH
+	rectangle(150, 275, 800, 500);
+	rectangle(XMT[0], 550, XMT[4], 775);
+	if (Window == MUON_SACH) {
 		rectangle(170, 875, 845, 975);
 	}
 	
 	int yline = 600;
 	line(XMT[0], yline, XMT[4], yline);
-	for(int i=0; i<4; i++){
+	for (int i=0;i<4;i++) {
 		line(XMT[i], 550, XMT[i], 775);
 		outtextxy((XMT[i] + XMT[i+1]) / 2 - textwidth(t[i]) / 2, (550 + yline) / 2 - textheight(t[i]) / 2, t[i]);
 	}
@@ -153,7 +153,7 @@ void DrawBorderDSMT(){
 
 void DrawItemMT(int i){
 	settextstyle(SANS_SERIF_FONT, HORIZ_DIR, 2);
-	setcolor((DSMTS.mt[i].trangThai == 2) ? PANEL: TEXT_COLOR_SELECTED);	
+	setcolor((DSMTS.mtr[i].trangThai == 2) ? PANEL: TEXT_COLOR_SELECTED);	
 	outtextxy(XMT[0] + 10, 625 + i*40, DSMTS.mtr[i].MASACH);
 	outtextxy(XMT[1] + 10, 625 + i*40, DSMTS.mtr[i].tenSach);
 	outtextxy(XMT[2] + 10, 625 + i*40, DSMTS.mtr[i].ngayMuon);
@@ -189,7 +189,7 @@ void ItemSachMuonEvent(){
 	}
 }
 
-bool isDGQH(DS_DauSach &DSDS, TreeDocgia &DSDG){
+bool isDGQH(DS_DauSach &DSDS, TreeDocGia &DSDG){
     if (currentDGMT->mt.chuaTra > 0) {
     	for (mtPTR p = currentDGMT->mt.First; p != NULL; p = p->next) {
     		if (p->muonTra.trangThai == 0) { // DANG MUON SACH (CHUA TRA)
@@ -230,7 +230,7 @@ void DrawThongTinDocGia(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					
 		outtextxy(500, 400, PhaiDocGia[currentDGMT->phai]);
 		
-		setcolor((CurrentDGMT->trangThai == 0) ? PANEL: TEXT_COLOR_SELECTED);	
+		setcolor((currentDGMT->trangThai == 0) ? PANEL: TEXT_COLOR_SELECTED);	
 		outtextxy(500, 450, TTTDocGia[currentDGMT->trangThai]);	
 		
 		settextstyle(BOLD_FONT, HORIZ_DIR, 3);		
@@ -244,20 +244,21 @@ void DrawThongTinDocGia(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 		DSMTS.n = 0;
 		DauSach *ds;
 		
-		if (currentDGMT->mt.chuaTra > 0) {
-			DSMTS.n = currentDGMT->mt.chuaTra;
-			int i = DSMTS.n - 1;
-			for (mtPTR p = currentDGMT->mt.First; p != NULL; p = p->next) {
-				if (p->muonTra.trangThai != 1) {
-					ds = GetDauSachByMaSach(DSDS, p->muonTra.MASACH);
-					strcpy(DSMTS.mtr[i].MASACH, p->muonTra.MASACH);
-					strcpy(DSMTS.mtr[i].tenSach, ds->tenSach);
-					strcpy(DSMTS.mtr[i].ngayMuon, p->muonTra.ngayMuon);
-					DSMTS.mtr[i].trangThai = p->muonTra.trangThai;
-					DrawItemMT(i--);
-				}
-			}
-		}
+		if(currentDGMT->mt.chuaTra > 0){	
+	        DSMTS.n = currentDGMT->mt.chuaTra;
+	        int i = DSMTS.n-1;
+	        for(mtPTR mt = currentDGMT->mt.First; mt != NULL; mt = mt->next){
+	        	//cout << mt->muonTra.trangThai << endl;
+	            if(mt->muonTra.trangThai != 1){
+	                ds = GetDauSachByMaSach(DSDS, mt->muonTra.MASACH);
+	                strcpy(DSMTS.mtr[i].MASACH, mt->muonTra.MASACH);
+	                strcpy(DSMTS.mtr[i].tenSach, ds->tenSach);
+	                strcpy(DSMTS.mtr[i].ngayMuon, mt->muonTra.ngayMuon);
+	                DSMTS.mtr[i].trangThai = mt->muonTra.trangThai;
+	                DrawItemMT(i--);
+	            }
+	        }
+	    } 
 		
 		if (Window == MUON_SACH) {
 			setfillstyle(SOLID_FILL, BG_COLOR);
@@ -347,7 +348,7 @@ void DrawThongTinSach(DS_DauSach &DSDS) {
 		setcolor(TEXT_COLOR_SELECTED);
 		outtextxy(1450, 400, currentSachMT->MASACH);
 		outtextxy(1450, 450, currentDSMT->tenSach);	
-		outtextxy(1450, 500, TrangThaiSach[CurrentSachMT->trangThai]);
+		outtextxy(1450, 500, TrangThaiSach[currentSachMT->trangThai]);
 		outtextxy(1450, 550, currentSachMT->viTri);
 		
 		if (CheckDuplicateISBNByMaSach(DSDS)) {
@@ -375,7 +376,7 @@ void DrawThongTinSach(DS_DauSach &DSDS) {
 		outtextxy((w/2) + 350, 300, "KHONG TIM THAY SACH!");
 	}
 	
-	settextxy(BOLD_FONT, HORIZ_DIR, 2);
+	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 	setcolor(TIPS);
 	outtextxy(1175, 840, mess);
 }
@@ -530,7 +531,7 @@ void MuonTraEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 			} else if (btnMuonNgay.isMouseHover(mx, my) && currentDGMT != NULL) {
 				Window = MUON_SACH;
 				DrawTrangConDSMT(DSDS);
-				CurrentDGMT = &TimDocGiaTheoMa(root, currentDGMT->MATHE)->docGia;
+				currentDGMT = &TimDocGiaTheoMa(root, currentDGMT->MATHE)->docGia;
 				DrawThongTinDocGia(DSDS, DSDG);
 			}
 		}
@@ -577,7 +578,7 @@ void MuonTraEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					if (btnXacNhanLamMatSach.isMouseHover(mx, my)) {
 						MuonTra tra(DSMTS.mtr[currentMT].MASACH, DSMTS.mtr[currentMT].ngayMuon, "", 2);
 						Update_MuonTra(currentDGMT->mt, tra);
-						currentDSMT = GetDauSachByMaSach(DSDs, DSMTS.mtr[currentMT].MASACH);
+						currentDSMT = GetDauSachByMaSach(DSDS, DSMTS.mtr[currentMT].MASACH);
 						SachPTR nodeSach = GetNodeSachByMaSach(currentDSMT->First, DSMTS.mtr[currentMT].MASACH);
 						Sach sach = nodeSach->sach;
 						sach.trangThai = 2; // DA THANH LY

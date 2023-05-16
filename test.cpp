@@ -16,6 +16,7 @@ using namespace std;
 #include "local.h"
 #include "dausachvasach.h"
 #include "docgia.h"
+#include "muontra.h"
 
 #include "nhapxuat.h"
 
