@@ -140,11 +140,31 @@ void GetHieuChinhDauSach(DS_DauSach &DSDS,int i){
 void DrawThemSach(DS_DauSach &DSDS) {
 	// auto create ma sach sau moi lan load trang them sach
 	
-	if (currentNhapSach == 1) {
-		startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
+	if (DSDS.nodes[currentDauSach]->deleted == false) {
+		if (currentNhapSach == 1) {
+			startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
+		} else {
+			startIndexSach++;
+		}
 	} else {
-		startIndexSach++;
+		SachPTR p = DSDS.nodes[currentDauSach]->First;
+		int tmp;
+		bool ok = false;
+		for (int i=0;i<DSDS.nodes[currentDauSach]->soLuong && p != NULL;i++, p = p->next) {
+			tmp = GetSTTOfMaSach(p->sach.MASACH);
+			if (tmp != i) {
+				startIndexSach = min(tmp, i);
+				ok = true;
+				break;
+			}
+		}
+		
+		if (!ok) {
+			startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
+		}
 	}
+	
+	
 	
 	char id[15];
 	sprintf(id, "%s-%d", DSDS.nodes[currentDauSach]->ISBN, startIndexSach);
@@ -181,6 +201,8 @@ void DrawThemSach(DS_DauSach &DSDS) {
 	edThemTrangThaiSach.draw();
 	edThemViTriSach.draw();
 	btnBackToNhapSach.draw();	
+	
+
 }
 
 void DrawHieuChinhSach() {
@@ -210,7 +232,7 @@ void DrawHieuChinhSach() {
 	setcolor(TIPS);
 	outtextxy(XDMS[0] + 40 + textwidth(ThongBao), 955-  textheight(ThongBao) / 2, mess);
 	
-	
+	btnXoaSach.draw();
 	btnHieuChinhSach.draw();
 	edHieuChinhMaSach.draw();
 	edHieuChinhTrangThaiSach.draw();
@@ -332,6 +354,24 @@ void DrawListSach(DS_DauSach &DSDS) {
 }
 
 
+bool IsBookBorrowed(TreeDocGia& DSDG, char *maSach) {
+	cout << DSDG.n << endl;
+	mtPTR p;
+	for (int i=0;i<DSDG.n;i++) {
+		p = DSDG.nodes[i]->mt.First;
+		while (p != NULL) {
+			if (strcmp(p->muonTra.MASACH, maSach) == 0) { 
+				return true;
+			}
+			p = p->next;
+		}
+		cout << endl;
+	}
+	return false;
+}
+
+
+
 void DrawNhapSach() {
 	// clear subWindows: lam sach khong gian ve bang
 	setfillstyle(SOLID_FILL, BG_COLOR);
@@ -375,6 +415,7 @@ void DrawTrangConDSDS(DS_DauSach &DSDS) {
 		DrawDanhSachDauSach();
 		DrawListDSDS(DSDS);
 	} else if (Window == DANH_MUC_SACH) {
+		cout<<"l";
 		DrawListSach(DSDS);
 		if (subWindow == THEM_SACH) {
 			DrawThemSach(DSDS);
@@ -837,7 +878,11 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					if (CheckSach(edThemTrangThaiSach,edThemViTriSach,true)) {
 						Sach sach(edThemMaSach.content, edThemTrangThaiSach.toInt(), edThemViTriSach.content);
 						cout << edThemViTriSach.content;
-						InsertLastNodeSach(DSDS.nodes[currentDauSach]->First, sach);
+						if (DSDS.nodes[currentDauSach]->deleted == false) {
+							InsertLastNodeSach(DSDS.nodes[currentDauSach]->First, sach);
+						} else {
+							InsertOrderNodeSach(DSDS.nodes[currentDauSach]->First, sach);
+						}
 						DSDS.nodes[currentDauSach]->soLuong++;
 						currentNhapSach++;
 						strcpy(mess, "Them sach thanh cong!");
@@ -868,6 +913,7 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 			}
 		} else if (subWindow == HIEU_CHINH_SACH) {
 			ButtonEffect(btnHieuChinhSach);
+			ButtonEffect(btnXoaSach);
 			ButtonEffect(btnBackToNhapSach);
 			if (GetAsyncKeyState(VK_LBUTTON)) {
 				if(btnBackToNhapSach.isMouseHover(mx, my)){	
@@ -889,6 +935,38 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 						}
 					}
 					DrawListSach(DSDS);
+				} else if (btnXoaSach.isMouseHover(mx, my)) {
+
+					char *tmp = GetNodeSachByPosition(DSDS.nodes[currentDauSach]->First, 8 * (currentPageSach - 1) + currentItemSach)->sach.MASACH;
+					cout << tmp  << endl;
+					
+					if (IsBookBorrowed(DSDG, tmp)) {
+						memset(mess, 0, sizeof(mess));
+						strcpy(mess, "SACH NAY DANG CO NGUOI MUON NEN KHONG THE XOA");
+						setcolor(TIPS);
+						settextstyle(BOLD_FONT, HORIZ_DIR, 2);
+						outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
+					} else {
+						memset(mess, 0, sizeof(mess));
+						if (DSDS.nodes[currentDauSach]->deleted == false && GetSTTOfMaSach(tmp) != DSDS.nodes[currentDauSach]->soLuong - 1 ) {
+							DSDS.nodes[currentDauSach]->deleted = true;
+						}
+						DeleteNodeSachByMaSach(DSDS.nodes[currentDauSach]->First, tmp);
+						DSDS.nodes[currentDauSach]->soLuong--;
+						currentItemSach = -1;
+						ClearScreen(1);
+						subWindow = NHAP_SACH;
+						DrawTrangConDSDS(DSDS);	
+						strcpy(mess, "XOA SACH THANH CONG!");
+						setcolor(TIPS);
+						settextstyle(BOLD_FONT, HORIZ_DIR, 2);
+						outtextxy((w/2) - 350 + textwidth(ThongBao), 875 - textheight(mess) / 2, mess);
+					}
+
+					
+					
+					
+							
 				} else if (edThemMaSach.isMouseHover(mx, my)) {
 					setfillstyle(SOLID_FILL, BG_COLOR);
 					bar((w/2) - 430 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, (w/2) + 430, 955 + textheight(ThongBao) / 2);				

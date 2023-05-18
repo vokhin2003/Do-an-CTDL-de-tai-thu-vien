@@ -243,10 +243,10 @@ void DrawThongTinDocGia(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 		(Window == MUON_SACH) ? btnTraNgay.draw() : btnMuonNgay.draw();
 		DSMTS.n = 0;
 		DauSach *ds;
-		
 		if(currentDGMT->mt.chuaTra > 0){	
 	        DSMTS.n = currentDGMT->mt.chuaTra;
 	        int i = DSMTS.n-1;
+	        //cout << i << endl;
 	        for(mtPTR mt = currentDGMT->mt.First; mt != NULL; mt = mt->next){
 	        	//cout << mt->muonTra.trangThai << endl;
 	            if(mt->muonTra.trangThai != 1){

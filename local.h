@@ -60,7 +60,8 @@ Button btnThemSach(209, w/2-50, 870, 100, 50, "THEM");
 EditText edHieuChinhMaSach(1014, XDMS[0]+30, 720, 850, 40, "Ma sach:", "", "Auto");
 EditText edHieuChinhTrangThaiSach(1015, XDMS[0]+30, 770, 850, 40, "Trang thai [0,1,2]", "", "0:Cho muon duoc- 1:Da cho muon- 2:Da thanh ly", TrangThaiSach);
 EditText edHieuChinhViTriSach(1015, XDMS[0]+30, 820, 850, 40, "Vi tri :", "", "Toi da 18 ki tu");
-Button btnHieuChinhSach(217, w/2-50, 870, 100, 50, "EDIT");
+Button btnHieuChinhSach(217, w/2 - 200, 870, 100, 50, "EDIT");
+Button btnXoaSach(218, w/2 + 200, 870, 100, 50, "DELETE");
 Button btnBackToNhapSach(210, XDMS[0], 610, 200, 35, "< BACK TO ADD");
 
 // Button Dau Sach
@@ -665,6 +666,7 @@ void Event(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 	} else if (currentMenu == btnQLDauSach.id) {
 		DauSachEvent(DSDS, DSDG);
 	} else if (currentMenu == btnQLDocGia.id) {
+//		cout << DSDG.n << endl;
 		DocGiaEvent(DSDS, DSDG, tdg);
 	} else if (currentMenu == btnQLSach.id) {
 		MuonTraEvent(DSDS, DSDG);

@@ -22,6 +22,19 @@ struct NodeSach{
 
 typedef NodeSach *SachPTR;
 
+int GetSTTOfMaSach(char *s) {
+	int res = 0;
+	int i = 0;
+	for (i=0;i<strlen(s);i++) {
+		if (s[i] == '-') break;
+	}
+	++i;
+	for (int pos = i; pos < strlen(s);pos++) {
+		res = res * 10 + s[pos] - '0';
+	}
+	return res;
+}
+
 SachPTR makeNodeSach(Sach x) {
 	SachPTR newNode = new NodeSach();
 	newNode->sach = x;
@@ -54,6 +67,31 @@ bool InsertAfterNodeSach(SachPTR &x, Sach sach) {
 		newNode->next = x->next;
 		x->next = newNode;
 		return true;
+	}
+}
+
+void InsertOrderNodeSach(SachPTR &First, Sach x) {
+	SachPTR newNode = makeNodeSach(x);
+	if (First == NULL) {
+		First = newNode;
+	} else {
+		SachPTR prev = NULL;
+		SachPTR curr = First;
+		
+		int newSTT = GetSTTOfMaSach(x.MASACH);
+		
+		while (curr != NULL && GetSTTOfMaSach(curr->sach.MASACH) < newSTT) {
+			prev = curr;
+			curr = curr->next;
+		}
+		
+		if (prev == NULL) {
+			newNode->next = First;
+			First = newNode;
+		} else {
+			newNode->next = prev->next;
+			prev->next = newNode;
+		}
 	}
 }
 
@@ -90,6 +128,34 @@ SachPTR GetNodeSachByPosition(SachPTR First, int pos) {
 	return p;
 }
 
+void DeleteNodeSachByMaSach(SachPTR &First, char *maSach) {
+	if (First == NULL) return;
+	SachPTR p = First;
+	SachPTR prev = NULL;
+	
+	while (p != NULL) {
+		if (strcmp(p->sach.MASACH, maSach) == 0) {
+			
+			if (prev == NULL) { // TRUONG HOP PHAN TU DAU TIEN
+				First = p->next;
+			} else {
+				prev->next = p->next;
+			}
+			
+			delete p;
+			p = NULL;
+			break;
+		}
+		
+		prev = p;
+		p = p->next;
+	}
+	
+
+}
+
+
+
 // DAUSACH ------------------
 
 int sizeListIndexDauSachSearch = 0;
@@ -105,7 +171,9 @@ struct DauSach{
 	SachPTR First = NULL;
 	
 	// cac thuoc tinh them
-	int soLuotMuon, soLuong;
+	int soLuotMuon, soLuong; 
+//	int last; // STT CUOI CUNG CUA MA SACH TRONG DAU SACH
+	bool deleted;
 	
 	DauSach(){
 	}
@@ -120,6 +188,8 @@ struct DauSach{
 		First = NULL;		
 		soLuong = 0; //so luong sach moi dau sach
 		soLuotMuon = 0;
+//		last = -1;
+		deleted = false;
 	}
 };
 
@@ -291,7 +361,8 @@ struct NodeMuonTra{
 typedef NodeMuonTra* mtPTR;
 
 struct DS_MuonTra{
-	mtPTR First, Last;
+	mtPTR First = NULL; 
+	mtPTR Last;
 	
 	// thuoc tinh them
 	int total;		// tong so luong sach da muon
@@ -299,7 +370,7 @@ struct DS_MuonTra{
 	
 	DS_MuonTra() {
 		First = NULL;
-		Last = NULL;
+//		Last = NULL;
 		total = 0;
 		chuaTra = 0;
 	}
@@ -332,7 +403,7 @@ void InsertFirstMuonTra(DS_MuonTra &DSMT, MuonTra x) {
 }
 
 
-void InsertLastMuonTra(DS_MuonTra &DSMT, MuonTra x) {
+void InsertLastMuonTra(DS_MuonTra &DSMT, MuonTra &x) {
 	mtPTR newNode = makeNodeMuonTra(x);
 	if (DSMT.First == NULL) {
 		DSMT.First = newNode;

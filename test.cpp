@@ -46,6 +46,8 @@ int main() {
 
 	DrawMenu();
 	
+//	cout << DSDS.n;
+	
 	while (true) {
 		Event(DSDS, DSDG, tdg);
 		if (isExit) break;
