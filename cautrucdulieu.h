@@ -253,11 +253,13 @@ void InsertDauSach(DS_DauSach &DSDS, DauSach* dauSach, int pos) {
 bool InsertOrderDauSach(DS_DauSach &DSDS, DauSach* dauSach) {
 	if (DSDS.n >= MAXLIST_DAUSACH) return false;
 	int i;
-	for (i = 0; i < DSDS.n; i++) {
+	for (i=0;i<DSDS.n;i++) {
 		if (strcmp(dauSach->theLoai, DSDS.nodes[i]->theLoai) < 0) {
 			break;
-		} else if (strcmp(dauSach->tenSach, DSDS.nodes[i]->tenSach) <= 0) {
-			break;
+		} else if (strcmp(dauSach->theLoai, DSDS.nodes[i]->theLoai) == 0) {
+			if (strcmp(dauSach->tenSach, DSDS.nodes[i]->tenSach) <= 0) {
+				break;
+			}
 		}
 	}
 	InsertDauSach(DSDS, dauSach, i);

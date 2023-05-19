@@ -161,6 +161,7 @@ void DrawThemSach(DS_DauSach &DSDS) {
 		
 		if (!ok) {
 			startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
+//			DSDS.nodes[currentDauSach]->deleted = true;
 		}
 	}
 	
