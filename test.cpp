@@ -61,7 +61,7 @@ int main() {
 
 //	GetHieuChinhDauSach(DSDS, 3);
 	
-	getch();
+//	getch();
 	closegraph();
 	return 0;
 }

@@ -372,7 +372,7 @@ struct DS_MuonTra{
 	
 	DS_MuonTra() {
 		First = NULL;
-//		Last = NULL;
+		Last = NULL;
 		total = 0;
 		chuaTra = 0;
 	}
@@ -388,7 +388,7 @@ mtPTR makeNodeMuonTra(MuonTra x) {
 	return newNode;
 }
 
-void InsertFirstMuonTra(DS_MuonTra &DSMT, MuonTra x) {
+void InsertFirstMuonTra(DS_MuonTra &DSMT, MuonTra &x) {
 	mtPTR newNode = makeNodeMuonTra(x);
 	newNode->next = DSMT.First;
 	if (DSMT.First != NULL) {
@@ -396,7 +396,7 @@ void InsertFirstMuonTra(DS_MuonTra &DSMT, MuonTra x) {
 	}
 	DSMT.First = newNode;
 	DSMT.total++;
-	if (x.trangThai != -1) {
+	if (x.trangThai != 1) {
 		DSMT.chuaTra++;
 	}
 	if (DSMT.Last == NULL) {
@@ -405,7 +405,7 @@ void InsertFirstMuonTra(DS_MuonTra &DSMT, MuonTra x) {
 }
 
 
-void InsertLastMuonTra(DS_MuonTra &DSMT, MuonTra &x) {
+void InsertLastMuonTra(DS_MuonTra &DSMT, MuonTra x) {
 	mtPTR newNode = makeNodeMuonTra(x);
 	if (DSMT.First == NULL) {
 		DSMT.First = newNode;
@@ -415,7 +415,7 @@ void InsertLastMuonTra(DS_MuonTra &DSMT, MuonTra &x) {
 	}
 	DSMT.Last = newNode;
 	DSMT.total++;
-	if (x.trangThai != -1) {
+	if (x.trangThai != 1) {
 		DSMT.chuaTra++;
 	}
 }
@@ -667,19 +667,19 @@ void InsertDocGia(DocGiaPTR &root, DocGia x) {
 		InsertDocGia(root->right, x);
 	}
 	
-	root->balanceFactor = balanceFactor(root);
-	int balance = root->balanceFactor;
-	if (balance > 1 && x.MATHE < root->left->docGia.MATHE) { // Left Left Case
-		rightRotate(root);
-	} else if (balance < -1 && x.MATHE > root->right->docGia.MATHE) { // Right Right Case
-		leftRotate(root);
-	} else if (balance > 1 && x.MATHE > root->left->docGia.MATHE) { // Left Right Case
-		leftRotate(root->left);
-		rightRotate(root);
-	} else if (balance < -1 && x.MATHE < root->right->docGia.MATHE) { // Right Left Case
-		rightRotate(root->right);
-		leftRotate(root);
-	}
+//	root->balanceFactor = balanceFactor(root);
+//	int balance = root->balanceFactor;
+//	if (balance > 1 && x.MATHE < root->left->docGia.MATHE) { // Left Left Case
+//		rightRotate(root);
+//	} else if (balance < -1 && x.MATHE > root->right->docGia.MATHE) { // Right Right Case
+//		leftRotate(root);
+//	} else if (balance > 1 && x.MATHE > root->left->docGia.MATHE) { // Left Right Case
+//		leftRotate(root->left);
+//		rightRotate(root);
+//	} else if (balance < -1 && x.MATHE < root->right->docGia.MATHE) { // Right Left Case
+//		rightRotate(root->right);
+//		leftRotate(root);
+//	}
 	
 }
 
@@ -697,9 +697,151 @@ DocGiaPTR TimDocGiaTheoMa(DocGiaPTR &root, int maDocGia) {
 }
 
 // Xoa 1 doc gia theo maDocGia
-int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
+//int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
+//
+//}
 
+void RemoveCaseTwoNode(DocGiaPTR &root, DocGiaPTR &y){
+	if(y->left!= NULL){
+		RemoveCaseTwoNode(root,y->left);
+	}
+	else{
+		root->docGia = y->docGia;
+		root = y;
+		y = y->right;
+	}
 }
+//// Xoa 1 doc gia theo maDocGia
+int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
+	if(root == NULL) return 0;
+	if(root->docGia.MATHE > maDocGia){
+		RemoveDocGia(root->left,maDocGia);
+	}
+	else if(root->docGia.MATHE < maDocGia){
+		RemoveDocGia(root->right,maDocGia);
+	}
+	else if(root->docGia.MATHE == maDocGia){
+		DocGiaPTR temp = root;
+		if(root->right == NULL){
+			root = root->left;
+		}
+		else if(root->left == NULL){
+			root = root->right;
+		}
+		else{
+			RemoveCaseTwoNode(root,root->right);
+		}
+		delete temp;
+	}
+	// can bang lai cay
+	if(root!= NULL){
+		root->balanceFactor = balanceFactor(root);
+		int balance = root->balanceFactor;
+		if (balance > 1 && balanceFactor(root->left) >=0){ // Left Left Case
+			rightRotate(root);
+		} 
+		else if (balance < -1 && balanceFactor(root->right) <=0 ){ // Right Right Case
+			leftRotate(root);
+		} 
+		else if (balance > 1 && balanceFactor(root->left) < 0) { // Left Right Case
+			leftRotate(root->left);
+			rightRotate(root);
+		}
+		else if (balance < -1 && balanceFactor(root->right)>0) { // Right Left Case
+			rightRotate(root->right);
+			leftRotate(root);
+	    }
+	}
+		return 1;
+}
+
+//void RemoveDocGia_SpecialCase(DocGiaPTR &node, DocGiaPTR &removeNode){
+//	if(node->left != NULL) 
+//		RemoveDocGia_SpecialCase(node->left, removeNode);
+//		//den day node la nut cuc trai cua cay con ben phai co nut goc la removeNode
+//	else{
+//		removeNode->docGia = node->docGia;
+//		removeNode = node;
+//		node = node->right;
+//	}
+//}
+//
+//int RemoveDocGia(DocGiaPTR &node, int maDocGia){
+//	if(node == NULL) 
+//		return 0;
+//	if(maDocGia < node->docGia.MATHE) 
+//		RemoveDocGia(node->left, maDocGia);
+//	else if(maDocGia > node->docGia.MATHE) 
+//		RemoveDocGia(node->right, maDocGia);
+//	else{//==
+//		DocGiaPTR removeNode = node;
+//		if(node->right == NULL)//co cay con ben trai
+//			node = node->left;
+//		else if(node->left == NULL)//co cay con ben phai
+//			node = node->right;
+//		else//co 2 cay con
+//			RemoveDocGia_SpecialCase(node->right, removeNode);
+//				
+//		DeleteAllMuonTra(removeNode->docGia.mt);		
+//		delete removeNode;
+//		return 1;
+//	}
+//}
+
+//int RemoveDocGia(DocGiaPTR& root, int maDocGia) {
+//	if (root == NULL) {
+//		return 0; // Không tìm th?y nút c?n xóa, tr? v? 0
+//	}
+//
+//	if (maDocGia < root->docGia.MATHE) {
+//		return RemoveDocGia(root->left, maDocGia); // Ti?p t?c tìm trong cây con trái
+//	} else if (maDocGia > root->docGia.MATHE) {
+//		return RemoveDocGia(root->right, maDocGia); // Ti?p t?c tìm trong cây con ph?i
+//	} else { // Tìm th?y nút c?n xóa
+//		if (root->left == NULL && root->right == NULL) { // Nút c?n xóa là nút lá
+//			delete root;
+//			root = NULL;
+//		} else if (root->left == NULL) { // Nút c?n xóa ch? có cây con ph?i
+//			DocGiaPTR temp = root;
+//			root = root->right;
+//			delete temp;
+//		} else if (root->right == NULL) { // Nút c?n xóa ch? có cây con trái
+//			DocGiaPTR temp = root;
+//			root = root->left;
+//			delete temp;
+//		} else { // Nút c?n xóa có c? hai cây con
+//			// Tìm nút lá ph?i nh?t c?a cây con trái
+//			DocGiaPTR maxNode = root->left;
+//			while (maxNode->right != NULL) {
+//				maxNode = maxNode->right;
+//			}
+//
+//			// Thay th? giá tr? c?a nút c?n xóa b?ng giá tr? c?a nút lá tìm du?c
+//			root->docGia = maxNode->docGia;
+//
+//			// Xóa nút lá tìm du?c t? cây con trái
+//			RemoveDocGia(root->left, maxNode->docGia.MATHE);
+//		}
+//
+//		// C?p nh?t l?i ch? s? cân b?ng và ki?m tra cân b?ng cây
+//		root->balanceFactor = balanceFactor(root);
+//		int balance = root->balanceFactor;
+//
+//		if (balance > 1 && balanceFactor(root->left) >= 0) { // Left Left Case
+//			rightRotate(root);
+//		} else if (balance > 1 && balanceFactor(root->left) < 0) { // Left Right Case
+//			leftRotate(root->left);
+//			rightRotate(root);
+//		} else if (balance < -1 && balanceFactor(root->right) <= 0) { // Right Right Case
+//			leftRotate(root);
+//		} else if (balance < -1 && balanceFactor(root->right) > 0) { // Right Left Case
+//			rightRotate(root->right);
+//			leftRotate(root);
+//		}
+//
+//		return 1; // Xóa thành công, tr? v? 1
+//	}
+//}
 
 void UpdateDocGia(DocGiaPTR &root, DocGia &docGia) {
 	DocGiaPTR nodeUpdate = TimDocGiaTheoMa(root, docGia.MATHE);

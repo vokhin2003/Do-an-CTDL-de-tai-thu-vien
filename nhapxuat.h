@@ -148,9 +148,11 @@ void ReadDocGiaFromFile(DocGiaPTR &root) {
 	int n, m;
 	DocGia dg;
 	MuonTra mt;
+	
 	fileDocGia >> n;
 	fileDocGia.ignore();
 	for (int i=0;i<n;i++) {
+		dg = DocGia();
 		fileDocGia >> dg.MATHE;				fileDocGia.ignore();
 		fileDocGia.getline(dg.ho, sizeof(dg.ho));
 		fileDocGia.getline(dg.ten, sizeof(dg.ten));
@@ -159,6 +161,7 @@ void ReadDocGiaFromFile(DocGiaPTR &root) {
 		
 		fileMuonTra >> m;					fileMuonTra.ignore();
 		for (int j=0;j<m;j++) {
+			mt = MuonTra();
 			fileMuonTra.getline(mt.MASACH, sizeof(mt.MASACH));
 			fileMuonTra.getline(mt.ngayMuon, sizeof(mt.ngayMuon));
 			fileMuonTra.getline(mt.ngayTra, sizeof(mt.ngayTra));

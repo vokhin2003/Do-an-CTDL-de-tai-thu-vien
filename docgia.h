@@ -230,6 +230,7 @@ void DrawDanhSachDocGia(TreeDocGia &DSDG, DS_DauSach &DSDS) {
 	btnTatCaDocGia.draw();
 	btnDocGiaQuaHan.draw();
 	
+	
 	DrawListDocGia(DSDG, true, DSDS);
 	
 	settextstyle(BOLD_FONT, HORIZ_DIR, 4);
@@ -667,8 +668,10 @@ void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 			ButtonEffect(btnNo);
 			if (GetAsyncKeyState(VK_LBUTTON)) {
 				if (btnYes.isMouseHover(mx, my)) {
+					cout << "\nTruoc khi xoa!" << endl;
 					if (RemoveDocGia(root, DSDG.nodes[currentDG]->MATHE)) {
 						strcpy(mess, "XOA DOC GIA THANH CONG!");
+						cout << "Xoa Hoan Tat !" << endl;
 						DrawXoaDocGia(DSDG, currentDG);
 						delay(2000);
 						currentDG = -1;
@@ -677,8 +680,10 @@ void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 						DrawTrangConDSDG(DSDG, tdg, DSDS);
 					} else {
 						strcpy(mess, "XOA DOC GIA KHONG THANH CONG!");
+						cout << "Xoa khong duoc !" << endl;
 						DrawXoaDocGia(DSDG, currentDG);
 					}
+					cout << "Thoat khoi if\n";
 				} else if (btnNo.isMouseHover(mx, my)) {
 					subWindow = CONFIRM_POPUP_NONE;
 					DrawXoaDocGia(DSDG, currentDG);
