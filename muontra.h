@@ -321,13 +321,18 @@ bool CheckDuplicateISBNByMaSach(DS_DauSach &DSDS) {
 		for (mtPTR p = currentDGMT->mt.First; p != NULL; p = p->next) {
 			if (p->muonTra.trangThai == 0) { // DANG MUON SACH (CHUA TRA)
 				ds = GetDauSachByMaSach(DSDS, p->muonTra.MASACH);
-				if (strcmp(ds->ISBN, p->muonTra.MASACH) == 0) {
+//				if (strcmp(ds->ISBN, p->muonTra.MASACH) == 0) {
+//					return true;
+//				}
+
+				if (strcmp(ds->ISBN, currentDSMT->ISBN) == 0) {
 					return true;
 				}
 			}
 		}
+		return false;
 	}
-	return false;
+	
 }
 
 void DrawThongTinSach(DS_DauSach &DSDS) {
@@ -354,6 +359,7 @@ void DrawThongTinSach(DS_DauSach &DSDS) {
 		if (CheckDuplicateISBNByMaSach(DSDS)) {
 			setcolor(TIPS);
 			outtextxy(1130, 600, "THONG BAO: DOC GIA DA MUON SACH THUOC DAU SACH NAY ROI!");
+			return;
 		}
 		
 		if (currentSachMT->trangThai == 0) {
