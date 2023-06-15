@@ -507,6 +507,7 @@ void MuonTraEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 							SachPTR nodeSach = GetNodeSachByMaSach(currentDSMT->First, currentSachMT->MASACH);
 							Sach sach = nodeSach->sach;
 							sach.trangThai = 1; // DA CHO MUON
+//							sach.borrowed = true;
 							UpdateNodeSach(nodeSach, sach);
 							// Tang so luot muon sach cua DAU SACH
 							currentDSMT->soLuotMuon++;

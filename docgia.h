@@ -97,7 +97,7 @@ void DrawBorderDSDocGia(){
 }
 
 void DrawBorderDSDocGiaQuaHan(){
-	char ch[7][20] = {"Ma the", "Ho", "Ten", "Trang thai", "Ngay QH", "Ma sach", "Ten Dau sach"};
+	char ch[7][20] = {"Ma the", "Ho", "Ten", "Ngay muon", "Ngay QH", "Ma sach", "Ten Dau sach"};
 	
 	settextstyle(3, HORIZ_DIR, 3);
 	setfillstyle(USER_FILL, PANEL);
@@ -129,7 +129,9 @@ void DrawItemDocGia(DocGia &docGia, int i, bool QUAHAN){
 		outtextxy((XXXQH[0] + XXXQH[1]) / 2 - textwidth(ch) / 2, 220 + i*40, ch);
 		outtextxy(XXXQH[1] + 10, 220 + i*40, docGia.ho);
 		outtextxy(XXXQH[2] + 10, 220 + i*40, docGia.ten);
-		outtextxy(XXXQH[3] + 10, 220 + i*40, TTTDocGia[docGia.trangThai]);
+//		outtextxy(XXXQH[3] + 10, 220 + i*40, TTTDocGia[docGia.trangThai]);
+
+		outtextxy(XXXQH[3] + 10, 220 + i*40, docGia.mt.First->muonTra.ngayMuon);
 	}
 	else {
 		outtextxy((XXXDG[0] + XXXDG[1]) / 2 - textwidth(ch) / 2, 220 + i*40, ch);
@@ -151,6 +153,8 @@ void DrawItemDocGiaQuaHan(DocGia &docGia, int soNgayQH, int i, DS_DauSach &DSDS)
 	DauSach *searchDSMT = NULL;
 	searchDSMT = GetDauSachByMaSach(DSDS, docGia.mt.First->muonTra.MASACH);
 	outtextxy(XXXQH[6] + 20, 220 + i * 40, searchDSMT->tenSach);
+	
+//	outtextxy(XXXQH[6] + 20, 220 + i * 40, docGia.mt.First->muonTra.ngayMuon);
 }
 
 
@@ -299,7 +303,7 @@ void ButtonSwitchClick(TreeDocGia &DSDG, DS_DauSach &DSDS) {
 	btnSapXepMaThe.isChoose = !sortDocGiaByName;
 }
 
-// Tuong ung voi ham DrawLineDocGia
+
 void DrawDocGiaHovered(TreeDocGia &DSDG, bool current, DS_DauSach &DSDS) {
 	setfillstyle(SOLID_FILL, current ? LINE : BG_COLOR);
 	bar(XXXDG[0], 220 + currentItemDG * 40 - 8, XXXDG[btnTatCaDocGia.isChoose ? 5 : 6], 220 + (currentItemDG + 1) * 40 - 8);
@@ -482,12 +486,11 @@ bool CheckDocGia(TreeDocGia &DSDG, EditText &maThe, EditText &ho, EditText &ten,
 
 void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 	char confirm[50];
-	
+	ButtonEffect(btnQuayVeMenu);
+	ButtonEffect(btnTatCaDocGia);
+	ButtonEffect(btnDocGiaQuaHan);
 	
 	if (Window == DANH_SACH_DOC_GIA) {
-		ButtonEffect(btnQuayVeMenu);
-		ButtonEffect(btnTatCaDocGia);
-		ButtonEffect(btnDocGiaQuaHan);
 		ItemDocGiaEvent(DSDG, DSDS);
 		ButtonEffect(btnPrev);
 		ButtonEffect(btnNext);
@@ -632,7 +635,7 @@ void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 					Edit = &edHieuChinhPhaiDocGia;
 				} else if (edHieuChinhTrangThaiTheDocGia.isMouseHover(mx, my) && !btnDocGiaQuaHan.isChoose) {
 					Edit = &edHieuChinhTrangThaiTheDocGia;
-				} else if (edHieuChinhTrangThaiTheDocGia.isMouseHover(mx, my) && !btnDocGiaQuaHan.isChoose) {
+				} else if (edHieuChinhTrangThaiTheDocGia.isMouseHover(mx, my) && btnDocGiaQuaHan.isChoose) {
 					strcpy(mess, "DOC GIA BI KHOA DO TRA SACH QUA HAN, HAY TRA SACH!");
 					bar((w/2) - 390 + textwidth(ThongBao), 675 - textheight(ThongBao) / 2, (w/2) + 390, 675 + textheight(ThongBao) / 2);
 					setcolor(TIPS);
@@ -692,3 +695,5 @@ void DocGiaEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 		}
 	}
 }
+
+

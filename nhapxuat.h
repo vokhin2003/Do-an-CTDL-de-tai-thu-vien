@@ -168,7 +168,7 @@ void ReadDocGiaFromFile(DocGiaPTR &root) {
 			fileMuonTra >> mt.trangThai;	fileMuonTra.ignore();
 			InsertLastMuonTra(dg.mt, mt);
 		}
-		cout<<dg.ho<<":"<<dg.mt.chuaTra<<endl;
+//		cout<<dg.ho<<":"<<dg.mt.chuaTra<<endl;
 		
 		InsertDocGia(root, dg);
 	}

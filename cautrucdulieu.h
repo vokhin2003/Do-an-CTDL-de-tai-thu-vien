@@ -3,6 +3,8 @@ struct Sach{
 	int trangThai; // 0: cho muon duoc, 1: da co nguoi muon, 2: sach da thanh ly
 	char viTri[20];
 	
+//	bool borrowed;
+	
 	Sach(){
 		
 	}
@@ -11,6 +13,7 @@ struct Sach{
 		strcpy(MASACH, ms);
 		trangThai = tt;
 		strcpy(viTri, vt);
+//		borrowed = false;
 	}
 
 };
@@ -62,8 +65,7 @@ bool InsertAfterNodeSach(SachPTR &x, Sach sach) {
 	if (x == NULL) {
 		return false;
 	} else {
-		SachPTR newNode = new NodeSach();
-		newNode->sach = sach;
+		SachPTR newNode = makeNodeSach(sach);
 		newNode->next = x->next;
 		x->next = newNode;
 		return true;
@@ -112,7 +114,7 @@ bool UpdateNodeSach(SachPTR &node, Sach &sach) {
 	return true;
 }
 
-// Tim trong 1 cuon sach trong First co MASACH tuong ung, tra ve Sach tim duoc
+// Tim trong 1 cuon sach trong First co MASACH tuong ung, tra ve NodeSach tim duoc
 SachPTR GetNodeSachByMaSach(SachPTR First, char *MASACH) {
 	SachPTR p ;
 	for (p = First; p != NULL; p = p->next) {
@@ -195,7 +197,7 @@ struct DauSach{
 
 struct DS_DauSach{
 	int n;
-	DauSach *nodes[200];
+	DauSach *nodes[MAXLIST_DAUSACH];
 	
 	DS_DauSach(){
 		n = 0;
@@ -203,7 +205,7 @@ struct DS_DauSach{
 };
 
 bool InsertLastDauSach(DS_DauSach &DSDS, DauSach *x) {
-	if (DSDS.n < 200) {
+	if (DSDS.n < MAXLIST_DAUSACH) {
 		DSDS.nodes[DSDS.n++] = x;
 		return true;
 	}
@@ -326,7 +328,8 @@ DauSach* GetDauSachByMaSach(DS_DauSach &DSDS, char *MASACH) {
 	
 	for (int i=0;i<DSDS.n;i++) {
 		if (strcmp(DSDS.nodes[i]->ISBN, isbn) == 0) {
-			if (stt < DSDS.nodes[i]->soLuong) return DSDS.nodes[i];
+//			if (stt < DSDS.nodes[i]->soLuong) return DSDS.nodes[i];
+			return DSDS.nodes[i];
 		}
 	}
 	return NULL;
@@ -591,16 +594,24 @@ struct TreeDocGia{
 			q.pop();
 			soNgayQuaHan[n];
 			QUAHAN = false;
+			int cmp = 0;
 			if(nodeDG->docGia.mt.chuaTra > 0)
 				for(NodeMuonTra *nodeMT = nodeDG->docGia.mt.First; nodeMT != NULL; nodeMT = nodeMT->next)
 					if(strlen(nodeMT->muonTra.ngayTra) == 0){// chua tra sach
 						int soNgayMuon = DiffTime(GetSystemDate(), nodeMT->muonTra.ngayMuon);
 						if(soNgayMuon > 6*24*60*60){
-							soNgayQuaHan[n] = (soNgayMuon / (24*60*60))-6; //NGAY QUA HAN SO VOI 7 NGAY CHO PHEP
-							//cout<<"snqh: "<<n<<":"<<soNgayQH[n]<<endl;
-							nodeDG->docGia.trangThai = 0;						
+//							soNgayQuaHan[n] = (soNgayMuon / (24*60*60))-6; //NGAY QUA HAN SO VOI 7 NGAY CHO PHEP
+//							//cout<<"snqh: "<<n<<":"<<soNgayQH[n]<<endl;
+//							nodeDG->docGia.trangThai = 0;						
+//							QUAHAN = true;
+
+							cmp = (soNgayMuon / (24*60*60)) - 6;
+							if (cmp > soNgayQuaHan[n]) soNgayQuaHan[n] = cmp;
+							
+							nodeDG->docGia.trangThai = 0;
 							QUAHAN = true;
 						}
+
 					}
 			if(QUAHAN) nodes[n++] = &nodeDG->docGia;  //XU LY NODE			
 			if(nodeDG->left != NULL) q.push(nodeDG->left);  //push node cuoi cung ben trai cua tree DocGia vo queue
@@ -667,20 +678,6 @@ void InsertDocGia(DocGiaPTR &root, DocGia x) {
 		InsertDocGia(root->right, x);
 	}
 	
-//	root->balanceFactor = balanceFactor(root);
-//	int balance = root->balanceFactor;
-//	if (balance > 1 && x.MATHE < root->left->docGia.MATHE) { // Left Left Case
-//		rightRotate(root);
-//	} else if (balance < -1 && x.MATHE > root->right->docGia.MATHE) { // Right Right Case
-//		leftRotate(root);
-//	} else if (balance > 1 && x.MATHE > root->left->docGia.MATHE) { // Left Right Case
-//		leftRotate(root->left);
-//		rightRotate(root);
-//	} else if (balance < -1 && x.MATHE < root->right->docGia.MATHE) { // Right Left Case
-//		rightRotate(root->right);
-//		leftRotate(root);
-//	}
-	
 }
 
 // Tim doc gia theo ma, neu co tra ve NodeDocGia, khong thi tra ve NULL
@@ -695,11 +692,6 @@ DocGiaPTR TimDocGiaTheoMa(DocGiaPTR &root, int maDocGia) {
 	}
 	return p;
 }
-
-// Xoa 1 doc gia theo maDocGia
-//int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
-//
-//}
 
 void RemoveCaseTwoNode(DocGiaPTR &root, DocGiaPTR &y){
 	if(y->left!= NULL){
@@ -729,8 +721,9 @@ int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
 			root = root->right;
 		}
 		else{
-			RemoveCaseTwoNode(root,root->right);
+			RemoveCaseTwoNode(temp,root->right);
 		}
+		DeleteAllMuonTra(temp->docGia.mt);
 		delete temp;
 	}
 	// can bang lai cay
@@ -755,93 +748,6 @@ int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
 		return 1;
 }
 
-//void RemoveDocGia_SpecialCase(DocGiaPTR &node, DocGiaPTR &removeNode){
-//	if(node->left != NULL) 
-//		RemoveDocGia_SpecialCase(node->left, removeNode);
-//		//den day node la nut cuc trai cua cay con ben phai co nut goc la removeNode
-//	else{
-//		removeNode->docGia = node->docGia;
-//		removeNode = node;
-//		node = node->right;
-//	}
-//}
-//
-//int RemoveDocGia(DocGiaPTR &node, int maDocGia){
-//	if(node == NULL) 
-//		return 0;
-//	if(maDocGia < node->docGia.MATHE) 
-//		RemoveDocGia(node->left, maDocGia);
-//	else if(maDocGia > node->docGia.MATHE) 
-//		RemoveDocGia(node->right, maDocGia);
-//	else{//==
-//		DocGiaPTR removeNode = node;
-//		if(node->right == NULL)//co cay con ben trai
-//			node = node->left;
-//		else if(node->left == NULL)//co cay con ben phai
-//			node = node->right;
-//		else//co 2 cay con
-//			RemoveDocGia_SpecialCase(node->right, removeNode);
-//				
-//		DeleteAllMuonTra(removeNode->docGia.mt);		
-//		delete removeNode;
-//		return 1;
-//	}
-//}
-
-//int RemoveDocGia(DocGiaPTR& root, int maDocGia) {
-//	if (root == NULL) {
-//		return 0; // Không tìm th?y nút c?n xóa, tr? v? 0
-//	}
-//
-//	if (maDocGia < root->docGia.MATHE) {
-//		return RemoveDocGia(root->left, maDocGia); // Ti?p t?c tìm trong cây con trái
-//	} else if (maDocGia > root->docGia.MATHE) {
-//		return RemoveDocGia(root->right, maDocGia); // Ti?p t?c tìm trong cây con ph?i
-//	} else { // Tìm th?y nút c?n xóa
-//		if (root->left == NULL && root->right == NULL) { // Nút c?n xóa là nút lá
-//			delete root;
-//			root = NULL;
-//		} else if (root->left == NULL) { // Nút c?n xóa ch? có cây con ph?i
-//			DocGiaPTR temp = root;
-//			root = root->right;
-//			delete temp;
-//		} else if (root->right == NULL) { // Nút c?n xóa ch? có cây con trái
-//			DocGiaPTR temp = root;
-//			root = root->left;
-//			delete temp;
-//		} else { // Nút c?n xóa có c? hai cây con
-//			// Tìm nút lá ph?i nh?t c?a cây con trái
-//			DocGiaPTR maxNode = root->left;
-//			while (maxNode->right != NULL) {
-//				maxNode = maxNode->right;
-//			}
-//
-//			// Thay th? giá tr? c?a nút c?n xóa b?ng giá tr? c?a nút lá tìm du?c
-//			root->docGia = maxNode->docGia;
-//
-//			// Xóa nút lá tìm du?c t? cây con trái
-//			RemoveDocGia(root->left, maxNode->docGia.MATHE);
-//		}
-//
-//		// C?p nh?t l?i ch? s? cân b?ng và ki?m tra cân b?ng cây
-//		root->balanceFactor = balanceFactor(root);
-//		int balance = root->balanceFactor;
-//
-//		if (balance > 1 && balanceFactor(root->left) >= 0) { // Left Left Case
-//			rightRotate(root);
-//		} else if (balance > 1 && balanceFactor(root->left) < 0) { // Left Right Case
-//			leftRotate(root->left);
-//			rightRotate(root);
-//		} else if (balance < -1 && balanceFactor(root->right) <= 0) { // Right Right Case
-//			leftRotate(root);
-//		} else if (balance < -1 && balanceFactor(root->right) > 0) { // Right Left Case
-//			rightRotate(root->right);
-//			leftRotate(root);
-//		}
-//
-//		return 1; // Xóa thành công, tr? v? 1
-//	}
-//}
 
 void UpdateDocGia(DocGiaPTR &root, DocGia &docGia) {
 	DocGiaPTR nodeUpdate = TimDocGiaTheoMa(root, docGia.MATHE);
@@ -904,6 +810,8 @@ bool DeleteFirst_TDGTS(TDGTS_PTR &Last) {
 
 // ------------------------------------------------------
 // Top sach
+// ------------------------------------------------------
+
 
 struct LuotMuonSach{
 	int indexDS;	// vi tri cua DauSach

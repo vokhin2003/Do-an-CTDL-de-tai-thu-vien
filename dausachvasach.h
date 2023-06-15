@@ -141,6 +141,7 @@ void DrawThemSach(DS_DauSach &DSDS) {
 	// auto create ma sach sau moi lan load trang them sach
 	
 	if (DSDS.nodes[currentDauSach]->deleted == false) {
+		cout << "OK + " << startIndexSach << endl;
 		if (currentNhapSach == 1) {
 			startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
 		} else {
@@ -161,7 +162,7 @@ void DrawThemSach(DS_DauSach &DSDS) {
 		
 		if (!ok) {
 			startIndexSach = DSDS.nodes[currentDauSach]->soLuong;
-//			DSDS.nodes[currentDauSach]->deleted = true;
+			DSDS.nodes[currentDauSach]->deleted = false;
 		}
 	}
 	
@@ -416,7 +417,7 @@ void DrawTrangConDSDS(DS_DauSach &DSDS) {
 		DrawDanhSachDauSach();
 		DrawListDSDS(DSDS);
 	} else if (Window == DANH_MUC_SACH) {
-		cout<<"l";
+//		cout<<"l";
 		DrawListSach(DSDS);
 		if (subWindow == THEM_SACH) {
 			DrawThemSach(DSDS);
@@ -428,7 +429,7 @@ void DrawTrangConDSDS(DS_DauSach &DSDS) {
 	}
 }
 
-// Tuong ung voi ham Draw_Line_DSDS
+
 void DrawItemDauSachHovered(DS_DauSach DSDS, bool current) {
 	setfillstyle(SOLID_FILL, current ? LINE : BG_COLOR);
 	bar(XDSDS[0], 230 + currentItemDauSach * 40 - 8, XDSDS[6], 230 + (currentItemDauSach + 1) * 40 - 8);
@@ -453,7 +454,7 @@ void DrawItemDauSachHovered(DS_DauSach DSDS, bool current) {
 	}
 }
 
-// Tuong ung voi ham Draw_Line_DMS
+
 void DrawItemDMSHovered(DS_DauSach &DSDS, bool current) {
 	setfillstyle(SOLID_FILL, current ? LINE : BG_COLOR);
 	bar(XDMS[0], 170 + currentItemSach * 40 - 8, XDMS[3], 170 + (currentItemSach + 1) * 40 - 8);
@@ -603,6 +604,11 @@ bool CheckSach(EditText &trangThaiSach, EditText &viTriSach, bool createSach) {
 		outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
 		return false;
 	}
+//	} else if (trangThaiSach.toInt() == 2) {
+//		strcpy(mess, "Trang thai sach ban dau khong the la: DA THANH LY");
+//		outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
+//		return false;
+//	}
 	return true;
 }
 
@@ -875,10 +881,10 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					DrawTrangConDSDS(DSDS);
 				} else if (btnThemSach.isMouseHover(mx, my)) {
 					// CHECK THEM SACH
-					cout << edThemViTriSach.content;
+//					cout << edThemViTriSach.content;
 					if (CheckSach(edThemTrangThaiSach,edThemViTriSach,true)) {
 						Sach sach(edThemMaSach.content, edThemTrangThaiSach.toInt(), edThemViTriSach.content);
-						cout << edThemViTriSach.content;
+//						cout << edThemViTriSach.content;
 						if (DSDS.nodes[currentDauSach]->deleted == false) {
 							InsertLastNodeSach(DSDS.nodes[currentDauSach]->First, sach);
 						} else {
@@ -900,12 +906,20 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 					}
 					memset(edNhapSoLuongSach.content, 0, sizeof(edNhapSoLuongSach.content));
 				} else if (edThemMaSach.isMouseHover(mx, my)) {
+					setfillstyle(SOLID_FILL, BG_COLOR);
+					bar((w/2) - 430 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, (w/2) + 430, 955 + textheight(ThongBao) / 2);
 					memset(mess, 0, sizeof(mess));	
 					strcpy(mess, "Ma sach tu dong (khong the chinh sua)!");
 					setcolor(TIPS);
 					outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
 				} else if (edThemTrangThaiSach.isMouseHover(mx, my)) {
-					Edit = &edThemTrangThaiSach;
+//					Edit = &edThemTrangThaiSach;
+					setfillstyle(SOLID_FILL, BG_COLOR);
+					bar((w/2) - 430 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, (w/2) + 430, 955 + textheight(ThongBao) / 2);
+					memset(mess, 0, sizeof(mess));	
+					strcpy(mess, "Trang thai sach mac dinh la CHO MUON DUOC !");
+					setcolor(TIPS);
+					outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
 				} else if (edThemViTriSach.isMouseHover(mx, my)) {
 					Edit = &edThemViTriSach;
 				}
@@ -940,16 +954,19 @@ void DauSachEvent(DS_DauSach &DSDS, TreeDocGia &DSDG) {
 
 					char *tmp = GetNodeSachByPosition(DSDS.nodes[currentDauSach]->First, 8 * (currentPageSach - 1) + currentItemSach)->sach.MASACH;
 					cout << tmp  << endl;
+//					if (IsBookBorrowed(DSDG, tmp))
+
+//					bool tmp = GetNodeSachByPosition(DSDS.nodes[currentDauSach]->First, 8 * (currentPageSach - 1) + currentItemSach)->sach.borrowed;
 					
 					if (IsBookBorrowed(DSDG, tmp)) {
 						memset(mess, 0, sizeof(mess));
-						strcpy(mess, "SACH NAY DANG CO NGUOI MUON NEN KHONG THE XOA");
+						strcpy(mess, "SACH NAY DA (DANG) CO NGUOI MUON NEN KHONG THE XOA");
 						setcolor(TIPS);
 						settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 						outtextxy((w/2) - 410 + textwidth(ThongBao), 955 - textheight(ThongBao) / 2, mess);
 					} else {
 						memset(mess, 0, sizeof(mess));
-						if (DSDS.nodes[currentDauSach]->deleted == false && GetSTTOfMaSach(tmp) != DSDS.nodes[currentDauSach]->soLuong - 1 ) {
+						if (DSDS.nodes[currentDauSach]->deleted == false && GetSTTOfMaSach(tmp) != DSDS.nodes[currentDauSach]->soLuong - 1) {
 							DSDS.nodes[currentDauSach]->deleted = true;
 						}
 						DeleteNodeSachByMaSach(DSDS.nodes[currentDauSach]->First, tmp);

@@ -8,7 +8,7 @@ EditText *Edit = NULL;
 // hoanh do x cua Dau Sach de ve cot
 int XDSDS[8] = {200, 380, 900, 1050, 1400, 1500, w-200, 600}; //phan tu cuoi cung la vi tri cac edit box
 // X Danh Muc Sach
-int XDMS[4] = {(w/2)-450, (w/2)-250, (w/2)+100, (w/2)+450};
+int XDMS[4] = {(w/2) - 450, (w/2) - 250, (w/2) + 100, (w/2) + 450};
 
 char mess[50] = "ISBN khong duoc bo trong";
 
