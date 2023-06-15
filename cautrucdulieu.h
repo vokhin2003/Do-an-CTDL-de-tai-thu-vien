@@ -723,7 +723,7 @@ int RemoveDocGia(DocGiaPTR &root, int maDocGia) {
 		else{
 			RemoveCaseTwoNode(temp,root->right);
 		}
-		DeleteAllMuonTra(temp->docGia.mt);
+	//	DeleteAllMuonTra(temp->docGia.mt);
 		delete temp;
 	}
 	// can bang lai cay
@@ -806,6 +806,12 @@ bool DeleteFirst_TDGTS(TDGTS_PTR &Last) {
         delete p;
         return true;
     }
+}
+
+void deleteAll_TDGTS(TDGTS_PTR &Last) {
+	while (Last != NULL) {
+		DeleteFirst_TDGTS(Last);
+	}
 }
 
 // ------------------------------------------------------

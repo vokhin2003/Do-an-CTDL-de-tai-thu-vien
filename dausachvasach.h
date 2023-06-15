@@ -357,7 +357,7 @@ void DrawListSach(DS_DauSach &DSDS) {
 
 
 bool IsBookBorrowed(TreeDocGia& DSDG, char *maSach) {
-	cout << DSDG.n << endl;
+//	cout << DSDG.n << endl;
 	mtPTR p;
 	for (int i=0;i<DSDG.n;i++) {
 		p = DSDG.nodes[i]->mt.First;
@@ -367,7 +367,7 @@ bool IsBookBorrowed(TreeDocGia& DSDG, char *maSach) {
 			}
 			p = p->next;
 		}
-		cout << endl;
+//		cout << endl;
 	}
 	return false;
 }

@@ -459,12 +459,12 @@ void MoveToNextDSDS(EditText &ISBN,EditText &TenSach,EditText &SoTrang,EditText 
 	else if(Edit == &SoTrang) Edit = &TacGia;
 	else if(Edit == &TacGia) Edit = &NXB;
 	else if(Edit == &NXB) Edit = &TheLoai;
-	else if(Edit == &TheLoai) Edit = &ISBN;
+	else if(Edit == &TheLoai) Edit = &TenSach;
 }
 
 void MoveToPrevDSDS(EditText &ISBN,EditText &TenSach,EditText &SoTrang,EditText &TacGia,EditText &NXB,EditText &TheLoai){
 	if(Edit == &ISBN) Edit = &TheLoai;
-	else if(Edit == &TenSach) Edit = &ISBN;
+	else if(Edit == &TenSach) Edit = &TheLoai;
 	else if(Edit == &SoTrang) Edit = &TenSach;
 	else if(Edit == &TacGia) Edit = &SoTrang;
 	else if(Edit == &NXB) Edit = &TacGia;
@@ -650,6 +650,7 @@ void MenuEvent(DS_DauSach &DSDS, TreeDocGia &DSDG, TDGTS_PTR tdg) {
 					delete DSDS.nodes[--DSDS.n];
 				}
 				DeleteMemoryDocGia(root);
+				deleteAll_TDGTS(tdg);
 				cout << "Free memory danh muc sach\n";
 				isExit = true;
 			}
