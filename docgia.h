@@ -123,7 +123,7 @@ void DrawBorderDSDocGiaQuaHan(){
 void DrawItemDocGia(DocGia &docGia, int i, bool QUAHAN){
 	setcolor((recentEditDG == docGia.MATHE) ? TEXT_COLOR_SELECTED : TEXT_COLOR);
 	i %= 13;
-	char ch[6];
+	char ch[6], nm[11];
 	itoa(docGia.MATHE, ch, 10);
 	if (QUAHAN) {
 		outtextxy((XXXQH[0] + XXXQH[1]) / 2 - textwidth(ch) / 2, 220 + i*40, ch);
@@ -131,7 +131,9 @@ void DrawItemDocGia(DocGia &docGia, int i, bool QUAHAN){
 		outtextxy(XXXQH[2] + 10, 220 + i*40, docGia.ten);
 //		outtextxy(XXXQH[3] + 10, 220 + i*40, TTTDocGia[docGia.trangThai]);
 
-		outtextxy(XXXQH[3] + 10, 220 + i*40, docGia.mt.First->muonTra.ngayMuon);
+		strcpy(nm, getNgayMuonQuaHan(docGia));
+
+		outtextxy(XXXQH[3] + 10, 220 + i*40, nm);
 	}
 	else {
 		outtextxy((XXXDG[0] + XXXDG[1]) / 2 - textwidth(ch) / 2, 220 + i*40, ch);
@@ -145,15 +147,20 @@ void DrawItemDocGia(DocGia &docGia, int i, bool QUAHAN){
 void DrawItemDocGiaQuaHan(DocGia &docGia, int soNgayQH, int i, DS_DauSach &DSDS){
 	DrawItemDocGia(docGia, i, true);
 	i %= 13;
-	char ch[4];
+	char ch[4], ms[15];
 	sprintf(ch, "%d", soNgayQH);
 	outtextxy(XXXQH[4] + 30, 220 + i * 40, ch);
-	outtextxy(XXXQH[5] + 20, 220 + i * 40, docGia.mt.First->muonTra.MASACH);
+	
+	strcpy(ms, getMaSachQuaHan(docGia));
+	outtextxy(XXXQH[5] + 20, 220 + i * 40, ms);
+//	outtextxy(XXXQH[5] + 20, 220 + i * 40, docGia.mt.First->muonTra.MASACH);
 	
 	DauSach *searchDSMT = NULL;
-	searchDSMT = GetDauSachByMaSach(DSDS, docGia.mt.First->muonTra.MASACH);
+//	searchDSMT = GetDauSachByMaSach(DSDS, docGia.mt.First->muonTra.MASACH);
+//	outtextxy(XXXQH[6] + 20, 220 + i * 40, searchDSMT->tenSach);
+
+	searchDSMT = GetDauSachByMaSach(DSDS, ms);
 	outtextxy(XXXQH[6] + 20, 220 + i * 40, searchDSMT->tenSach);
-	
 //	outtextxy(XXXQH[6] + 20, 220 + i * 40, docGia.mt.First->muonTra.ngayMuon);
 }
 

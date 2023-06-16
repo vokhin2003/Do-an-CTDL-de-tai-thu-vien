@@ -224,12 +224,15 @@ bool IsInclude(const char* input, const char* tenSach) {
 	string target = tenSach, s = input;
 	int idx = target.find(s);
 	if (idx == string::npos) return false;
-	string tmp1 = input;
-	tmp1 += " ";
-	string tmp2 = " ";
-	tmp2 += tmp1;
-	return ((idx == 0 && target.find(tmp1) != string::npos) || (idx != 0 && target.find(tmp2) != string::npos));	
+	string input_space = s + " ";
+	string space_input_space = " " + s + " ";
+	string target_space = target + " ";
+	if ((idx == 0 && target.find(input_space) != string::npos) || (idx != 0 && target_space.find(space_input_space) != string::npos)) {
+		return true;
+	}
+	return false;
 }
+
 
 // Loc danh sach cac Dau Sach co chua string "strFind", Luu vi tri cua cac Dau Sach vao 1 mang: listIndexDauSachSearch
 void GetNodesList(DS_DauSach &DSDS, const char *strFind, int &arraySize) {
@@ -765,6 +768,21 @@ void DeleteMemoryDocGia(DocGiaPTR &node) {
 		DeleteMemoryDocGia(node->right);		
 		DeleteAllMuonTra(node->docGia.mt);		
 		delete node;
+	}
+}
+
+char* getMaSachQuaHan(DocGia &docGia){
+	if(docGia.mt.chuaTra > 0){
+		for(NodeMuonTra* node = docGia.mt.First; node != NULL; node = node->next){
+			if(strlen(node->muonTra.ngayTra) == 0) return node->muonTra.MASACH;
+		}
+	}
+}
+char* getNgayMuonQuaHan(DocGia &docGia){
+	if(docGia.mt.chuaTra > 0){
+		for(NodeMuonTra* node = docGia.mt.First; node != NULL; node = node->next){
+			if(strlen(node->muonTra.ngayTra) == 0) return node->muonTra.ngayMuon;
+		}
 	}
 }
 
